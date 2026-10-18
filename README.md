@@ -18,8 +18,7 @@ Nobody at the bank could answer the question, because the bank had no device inv
 
 The finding I was assigned required centralized device management enforcing encryption, compliance policies, and remote lock and wipe across all corporate endpoints.
 
-The part of this that struck me most was
-<!-- FILL IN: finish the sentence. What did it mean that a password is not encryption, or what did the empty device list tell you? -->
+The part of this that struck me most was that there was no process at all. Nothing like what Intune does: no way to identify a device, no verification of its state, and no structure for controlling who or what could access company data. The bank couldn't answer one basic question about its own laptop because it had no inventory, no enforced encryption, and no way to lock or wipe anything remotely.
 
 ---
 
@@ -42,7 +41,8 @@ Finally I validated the control by breaking compliance deliberately, watching th
 **Separated configuration from compliance.** Configuration sets the device the way the bank wants it. Compliance independently checks whether it actually is. Pushing a policy is not evidence, and only the second one produces an answer an examiner will accept.
 
 **Proved the control works.** Disabled encryption on the device on purpose, watched Intune mark it noncompliant and name the failed setting, remediated it, and confirmed it returned to compliant.
-<!-- FILL IN: add one line here with how long that round trip actually took for you. -->
+
+The round trip from raising the minimum OS version to the device returning to Compliant took about 15 minutes, and most of that was waiting for the device to check in again.
 
 **Built the inventory the bank never had.** Exported device, compliance and encryption reports, which answer in seconds the question leadership could not answer at all.
 
@@ -69,17 +69,18 @@ Microsoft Intune, Microsoft Entra ID, Microsoft 365 Business Premium, Windows 11
 
 **A password is not encryption.**
 A login password guards the doorway to the operating system, but a thief can pull the drive out and read it on another machine, and
-<!-- FILL IN: finish it. What does encryption do differently, and why did that decide whether this was a reportable event? -->
+encryption makes the data unreadable without the key, wherever the drive is plugged in. That is what would have decided whether the stolen laptop was a reportable event: an encrypted drive means the loan packets were not exposed, while an unencrypted one means the bank has to notify customers.
 
 **Compliance is all or nothing.**
 A device that passes four checks and fails one is not mostly compliant, it is noncompliant, and
-<!-- FILL IN: finish it. Why does that matter more than a score would? -->
+a score like "80%" would hide the one failure that matters. In my test, a single failed setting, the minimum OS version, was enough to flip the device to noncompliant. The device stays noncompliant because the policy requires every setting to be met, so one failure means it can't be trusted, no matter how many other checks pass. Intune named exactly which setting failed, so the fix was obvious.
 
 **Device compliance feeds an access decision.**
 A compliance result is not a report you file away. It can gate whether the device is allowed to reach sensitive systems, which means
-<!-- FILL IN: finish it. What would that have changed for the stolen laptop? -->
+the stolen laptop could have been blocked from email and loan files the moment it fell out of compliance, instead of staying trusted until someone noticed. In my lab I only observed the compliance status, but with a Conditional Access policy that requires a compliant device, a noncompliant laptop like mine in the failed test would lose access to company data until it was fixed.
 
-<!-- FILL IN: Add one of your own in the same shape. What took longest, what surprised you, or what you would do differently. -->
+**Intune has a lot more to it than it first looks.**
+The longest part was setting up Intune and understanding how each feature in the lab fits together. What surprised me was how much control it gives over access: the policies, compliance checks, and encryption settings all connect to each other. It was simple once I saw the pattern, and I enjoyed seeing how one device could be identified, checked, and controlled from one place.
 
 ---
 
